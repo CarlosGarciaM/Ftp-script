@@ -1,0 +1,29 @@
+# -*- coding: utf-8 -*-
+
+#Ejecutar como root
+
+import sys
+import os
+
+usuario = 'adduser user_%s' % (sys.argv[1])
+dir = 'mkdir /var/www/html/%s' % (sys.argv[1])
+index = 'touch /var/www/html/%s/index.html' % (sys.argv[1])
+permisos = 'chown -R user_%s /var/www/html/%s' % (sys.argv[1],sys.argv[1])
+fichero = '/var/www/html/%s/index.html' % (sys.argv[1])
+ftproot = 'DefaultRoot    /var/www/html/%s user_%s' % (sys.argv[1],sys.argv[1])
+
+os.system(usuario)
+os.system(dir)
+os.system(index)
+
+file = open(fichero, 'a')
+file.writelines('Pagina de %s' % (sys.argv[1]))
+file.close()
+
+os.system(permisos)
+
+file2 = open('/etc/proftpd/proftpd.conf', 'a')
+file2.writelines(ftproot)
+file2.close()
+
+os.system('systemctl restart proftpd')
